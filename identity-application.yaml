@@ -1,12 +1,12 @@
 identity:
-  url: ""
+  url: "http://localhost:8084"
   client-id: "identity-clientid"
   client-secret: "identity-secret"
 
-  authProvider:
-    type: "GENERIC"
-    issuer-url: "http://idp:5000"
-    backend-url: "http://idp:5000"
+  # authProvider:
+  #   type: "GENERIC"
+  #   issuer-url: "http://localhost:4011"
+  #   backend-url: "http://idp:5000"
   component-presets:
     identity:
       apis:
@@ -87,7 +87,7 @@ identity:
           permissions:
             - audience: "optimize-myaudience"
               definition: write:*
-            - audience: "identity-myaudience"
+            - audience:  ${IDENTITY_AUDIENCE:camunda-identity-resource-server}
               definition: read:users
     webmodeler:
       apis:
@@ -113,7 +113,7 @@ identity:
           permissions:
             - audience: "webmodeler-clientapi-myaudience"
               definition: write:*
-            - audience: "identity-myaudience"
+            - audience:  ${IDENTITY_AUDIENCE:camunda-identity-resource-server}
               definition: read:users
     console:
       apis:
@@ -128,8 +128,8 @@ identity:
           permissions:
             - audience: "console-api"
               definition: write:*
-server:
-  port: 8080
+# server:
+#   port: 8080
 
 spring:
   profiles:
@@ -139,8 +139,9 @@ camunda:
   identity:
     client-id: "identity-clientid"
     client-secret: "identity-secret"
-    baseUrl: "http://camunda-platform-identity:80"
-    issuer: "http://idp:5000"
+    baseUrl: "http://identity:8084"
+    issuer: "http://localhost:4011"
     issuerBackendUrl: "http://idp:5000"
+    type: "GENERIC"
 
 debug: true

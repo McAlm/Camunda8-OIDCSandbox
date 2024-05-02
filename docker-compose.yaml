@@ -31,6 +31,7 @@ services:
       - CAMUNDA_IDENTITY_TYPE=GENERIC
       - CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=http://idp:5000
       - CAMUNDA_IDENTITY_AUDIENCE=zeebe-res
+      - CAMUNDA_IDENTITY_BASE_URL=http://identity:8084
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=identity
       - SPRING_PROFILES_ACTIVE=identity-auth
       # DOES NOT HELP- ZEEBE_TOKEN_SCOPE=zeebe-client
@@ -229,6 +230,12 @@ services:
       MULTITENANCY_ENABLED: "false"
       USER_RESTRICTIONS_ENABLED: "false"
       RESOURCE_PERMISSIONS_ENABLED: "false"
+      IDENTITY_MAPPINGRULES_0_NAME: "Zeebe role mapper"
+      IDENTITY_MAPPINGRULES_0_CLAIMNAME: "client_id"
+      IDENTITY_MAPPINGRULES_0_CLAIMVALUE: "zeebe-client"
+      IDENTITY_MAPPINGRULES_0_OPERATOR: EQUALS
+      IDENTITY_MAPPINGRULES_0_RULETYPE: ROLE
+      IDENTITY_MAPPINGRULES_0_APPLIEDROLENAMES_0: "Zeebe"
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s

@@ -10,7 +10,7 @@ echo '---- access token ------------'
 echo $ath
 echo
 echo '---- topology no auth --------'
-grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/zeebe-gateway.proto -plaintext zeebe:26500 gateway_protocol.Gateway.Topology
+grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/gateway.proto -plaintext zeebe:26500 gateway_protocol.Gateway.Topology
 echo
 echo '---- topology with auth ------'
-grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/zeebe-gateway.proto -H "$ath" -plaintext zeebe:26500 gateway_protocol.Gateway.Topology
+grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/gateway.proto -H "$ath" -plaintext zeebe:26500 gateway_protocol.Gateway.Topology
