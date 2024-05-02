@@ -1,0 +1,6 @@
+- Name: zeebe-res
+  Scopes:
+    - zeebe-scope
+- Name: identity-res
+  Scopes:
+    - identity-scope

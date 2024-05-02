@@ -1,0 +1,146 @@
+identity:
+  url: ""
+  client-id: "identity-clientid"
+  client-secret: "identity-secret"
+
+  authProvider:
+    type: "GENERIC"
+    issuer-url: "http://idp:5000"
+    backend-url: "http://idp:5000"
+  component-presets:
+    identity:
+      apis:
+        - name: "Camunda Identity Resource Server"
+          audience: ${IDENTITY_AUDIENCE:camunda-identity-resource-server}
+          permissions:
+            - definition: read
+              description: "Read permission"
+            - definition: "read:users"
+              description: "Read users permission"
+            - definition: write
+              description: "Write permission"
+      roles:
+        - name: "Identity"
+          description: "Provides full access to Identity"
+          permissions:
+            - audience: ${IDENTITY_AUDIENCE:camunda-identity-resource-server}
+              definition: read
+            - audience: ${IDENTITY_AUDIENCE:camunda-identity-resource-server}
+              definition: write
+    operate:
+      apis:
+        - name: Operate API
+          audience: "operate-myaudience"
+          permissions:
+            - definition: read:*
+              description: "Read permission"
+            - definition: write:*
+              description: "Write permission"
+      roles:
+        - name: "Operate"
+          description: "Grants full access to Operate"
+          permissions:
+            - audience: "operate-myaudience"
+              definition: read:*
+            - audience: "operate-myaudience"
+              definition: write:*
+    tasklist:
+      apis:
+        - name: Tasklist API
+          audience: "tasklist-myaudience"
+          permissions:
+            - definition: read:*
+              description: "Read permission"
+            - definition: write:*
+              description: "Write permission"
+      roles:
+        - name: "Tasklist"
+          description: "Grants full access to Tasklist"
+          permissions:
+            - audience: "tasklist-myaudience"
+              definition: read:*
+            - audience: "tasklist-myaudience"
+              definition: write:*
+    zeebe:
+      apis:
+        - name: Zeebe API
+          audience: "zeebe-myaudience"
+          permissions:
+            - definition: write:*
+              description: "Write permission"
+      roles:
+        - name: "Zeebe"
+          description: "Grants full access to the Zeebe API"
+          permissions:
+            - audience: "zeebe-myaudience"
+              definition: write:*
+    optimize:
+      apis:
+        - name: Optimize API
+          audience: "optimize-myaudience"
+          permissions:
+            - definition: write:*
+              description: "Write permission"
+      roles:
+        - name: "Optimize"
+          description: "Grants full access to Optimize"
+          permissions:
+            - audience: "optimize-myaudience"
+              definition: write:*
+            - audience: "identity-myaudience"
+              definition: read:users
+    webmodeler:
+      apis:
+        - name: Web Modeler Internal API
+          audience: "webmodeler-clientapi-myaudience"
+          permissions:
+            - definition: write:*
+              description: "Write permission"
+        - name: Web Modeler API
+          audience: "webmodeler-publicapi-myaudience"
+          permissions:
+            - definition: create:*
+              description: "Allows create access for all resources"
+            - definition: read:*
+              description: "Allows read access to all resources"
+            - definition: update:*
+              description: "Allows update access to all resources"
+            - definition: delete:*
+              description: "Allows delete access for all resources"
+      roles:
+        - name: "Web Modeler"
+          description: "Grants full access to Web Modeler"
+          permissions:
+            - audience: "webmodeler-clientapi-myaudience"
+              definition: write:*
+            - audience: "identity-myaudience"
+              definition: read:users
+    console:
+      apis:
+        - name: Console API
+          audience: "console-api"
+          permissions:
+            - definition: write:*
+              description: "Write permission"
+      roles:
+        - name: "Console"
+          description: "Grants full access to Console"
+          permissions:
+            - audience: "console-api"
+              definition: write:*
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: oidc
+
+camunda:
+  identity:
+    client-id: "identity-clientid"
+    client-secret: "identity-secret"
+    baseUrl: "http://camunda-platform-identity:80"
+    issuer: "http://idp:5000"
+    issuerBackendUrl: "http://idp:5000"
+
+debug: true

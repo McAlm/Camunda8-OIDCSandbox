@@ -1,0 +1,34 @@
+[
+    {
+        "SubjectId": "1",
+        "Username": "User1",
+        "Password": "pwd",
+        "Claims": [
+            {
+                "Type": "name",
+                "Value": "Sam Tailor",
+                "ValueType": "string"
+            },
+            {
+                "Type": "email",
+                "Value": "sam.tailor@gmail.com",
+                "ValueType": "string"
+            },
+            {
+                "Type": "some-api-resource-claim",
+                "Value": "Sam's Api Resource Custom Claim",
+                "ValueType": "string"
+            },
+            {
+                "Type": "some-api-scope-claim",
+                "Value": "Sam's Api Scope Custom Claim",
+                "ValueType": "string"
+            },
+            {
+                "Type": "some-identity-resource-claim",
+                "Value": "Sam's Identity Resource Custom Claim",
+                "ValueType": "string"
+            }
+        ]
+    }
+]
