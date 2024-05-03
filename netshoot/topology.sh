@@ -14,3 +14,6 @@ grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/gateway.proto -plaintext
 echo
 echo '---- topology with auth ------'
 grpcurl -import-path /tmp/netshoot -proto /tmp/netshoot/gateway.proto -H "$ath" -plaintext zeebe:26500 gateway_protocol.Gateway.Topology
+echo
+echo '---- topology with auth via REST ------'
+curl -H "$ath" http://zeebe:8080/v1/topology
