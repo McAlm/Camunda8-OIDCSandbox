@@ -35,7 +35,7 @@ Add the following entries in the hosts file (Windows: C:\Windows\System32\Driver
     - You should see the token json.
     - Copy paste the access_token and use https://jwt.io to check the content of it
 
-1. Open url http://csb-operate.dockOperateer:5010/
+1. Open url http://csb-operate.docker:5010/
     - Enter the login credentials. Username: Operate, Password: pwd
     - **FAIL**: No permission for Operate - Please check your operate configuration or cloud configuration.
 

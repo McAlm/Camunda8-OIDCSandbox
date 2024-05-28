@@ -247,6 +247,8 @@ services:
       IDENTITY_MAPPINGRULES_2_OPERATOR: EQUALS
       IDENTITY_MAPPINGRULES_2_RULETYPE: ROLE
       IDENTITY_MAPPINGRULES_2_APPLIEDROLENAMES_0: "Operate"
+      IDENTITY_INITIAL_CLAIM_NAME: "email"
+      IDENTITY_INITIAL_CLAIM_VALUE: "sam.identity@test.net"
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s

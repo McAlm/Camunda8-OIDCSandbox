@@ -37,6 +37,7 @@
       "Description": "Identity client",
       "AllowedGrantTypes": ["authorization_code"],
       "AllowAccessTokensViaBrowser": true,
+      "AlwaysIncludeUserClaimsInIdToken": true,
       "RequirePkce": false,
       "AllowOfflineAccess": true,
       "RedirectUris": ["http://csb-identity.docker:5010/auth/login-callback"],
