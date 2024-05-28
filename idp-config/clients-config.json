@@ -30,5 +30,57 @@
       ],
       "IdentityTokenLifetime": 7200,
       "AccessTokenLifetime": 7200
+    },
+    {
+      "ClientId": "identity-client",
+      "ClientSecrets": ["identity-clientsecret"],
+      "Description": "Identity client",
+      "AllowedGrantTypes": ["authorization_code"],
+      "AllowAccessTokensViaBrowser": true,
+      "RequirePkce": false,
+      "AllowOfflineAccess": true,
+      "RedirectUris": ["http://csb-identity.docker:5010/auth/login-callback"],
+      "AllowedScopes": ["openapi", "openid", "email", "identity-scope"],
+      "ClientClaimsPrefix": "",
+      "Claims": [
+        {
+          "Type": "string_claim",
+          "Value": "string_claim_value",
+          "ValueType": "string"
+        },
+        {
+          "Type": "json_claim",
+          "Value": "[\"value1\", \"value2\"]",
+          "ValueType": "json"
+        } 
+      ],
+      "IdentityTokenLifetime": 7200,
+      "AccessTokenLifetime": 7200
+    },
+    {
+      "ClientId": "operate-client",
+      "ClientSecrets": ["operate-clientsecret"],
+      "Description": "Operate client",
+      "AllowedGrantTypes": ["authorization_code"],
+      "RedirectUris": ["http://csb-operate.docker:5010/identity-callback"],
+      "AllowAccessTokensViaBrowser": true,
+      "RequirePkce": false,
+      "AllowOfflineAccess": true,
+      "AllowedScopes": ["openapi", "openid", "email", "operate-scope"],
+      "ClientClaimsPrefix": "",
+      "Claims": [
+        {
+          "Type": "string_claim",
+          "Value": "string_claim_value",
+          "ValueType": "string"
+        },
+        {
+          "Type": "json_claim",
+          "Value": "[\"value1\", \"value2\"]",
+          "ValueType": "json"
+        }
+      ],
+      "IdentityTokenLifetime": 7200,
+      "AccessTokenLifetime": 7200
     }
   ]

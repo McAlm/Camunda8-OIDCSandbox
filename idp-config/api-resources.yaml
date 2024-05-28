@@ -4,3 +4,6 @@
 - Name: identity-res
   Scopes:
     - identity-scope
+- Name: operate-res
+  Scopes:
+    - operate-scope

@@ -13,7 +13,7 @@ services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
-    container_name: zeebe
+    container_name: csb-zeebe
     ports:
       - "26500:26500"
       - "9600:9600"
@@ -50,49 +50,48 @@ services:
       - elasticsearch
       - identity
 
-  # operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-  #   image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
-  #   container_name: operate
-  #   ports:
-  #     - "8081:8080"
-  #   environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
-  #     - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
-  #     - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
-  #     - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
-  #     - ZEEBE_TOKEN_AUDIENCE=zeebe-api
-  #     - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token
-  #     - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
-  #     - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
-  #     # For more information regarding configuration with Identity see:
-  #     # https://docs.camunda.io/docs/self-managed/operate-deployment/authentication/#identity
-  #     - SPRING_PROFILES_ACTIVE=identity-auth
-  #     - CAMUNDA_OPERATE_IDENTITY_BASEURL=http://identity:8084
-  #     - CAMUNDA_OPERATE_IDENTITY_ISSUER_URL=http://${IDENTITY_ISSUER_HOST}:18080/auth/realms/camunda-platform
-  #     - CAMUNDA_OPERATE_IDENTITY_ISSUER_BACKEND_URL=http://keycloak:8080/auth/realms/camunda-platform
-  #     - CAMUNDA_OPERATE_IDENTITY_CLIENTID=operate
-  #     - CAMUNDA_OPERATE_IDENTITY_CLIENTSECRET=XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
-  #     - CAMUNDA_OPERATE_IDENTITY_AUDIENCE=operate-api
-  #     - CAMUNDA_OPERATE_MULTITENANCY_ENABLED=${MULTI_TENANCY_ENABLED}
-  #     - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://${IDENTITY_ISSUER_HOST}:18080/auth/realms/camunda-platform
-  #     - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://${IDENTITY_ISSUER_HOST}:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
-  #     - CAMUNDA_OPERATE_IDENTITY_RESOURCEPERMISSIONSENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
-  #     - management.endpoints.web.exposure.include=health
-  #     - management.endpoint.health.probes.enabled=true
-  #     - ZEEBE_CLIENT_CONFIG_PATH=/tmp/zeebe_auth_cache
-  #   healthcheck:
-  #     test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
-  #     interval: 30s
-  #     timeout: 1s
-  #     retries: 5
-  #     start_period: 30s
-  #   volumes:
-  #     - operate_tmp:/tmp
-  #   networks:
-  #     - camunda-platform
-  #   depends_on:
-  #     - zeebe
-  #     - identity
-  #     - elasticsearch
+  operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
+    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
+    container_name: csb-operate
+    ports:
+      - "8081:8080"
+    environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
+      - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      # For more information regarding configuration with Identity see:
+      # https://docs.camunda.io/docs/self-managed/operate-deployment/authentication/#identity
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
+      - CAMUNDA_IDENTITY_TYPE=GENERIC
+      - CAMUNDA_IDENTITY_ISSUER=http://idp:5000
+      - CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=http://csb-idp.docker:5010
+      - CAMUNDA_IDENTITY_CLIENT_ID=operate-client
+      - CAMUNDA_IDENTITY_CLIENT_SECRET=operate-clientsecret
+      - CAMUNDA_IDENTITY_AUDIENCE=operate-res
+      - CAMUNDA_IDENTITY_BASE_URL=http://identity:8084
+      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
+      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
+      - ZEEBE_AUTHORIZATION_SERVER_URL=http://idp:5000/connect/token
+      - ZEEBE_TOKEN_AUDIENCE=zeebe-res
+      - ZEEBE_CLIENT_CONFIG_PATH=/tmp/zeebe_auth_cache
+      - SPRING_PROFILES_ACTIVE=identity-auth
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - operate_tmp:/tmp
+    networks:
+      - camunda-platform
+    extra_hosts:
+      - "csb-idp.docker:host-gateway"
+    depends_on:
+      - zeebe
+      - identity
+      - elasticsearch
 
   # tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
   #   image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION}
@@ -215,7 +214,7 @@ services:
   #     - elasticsearch
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
-    container_name: identity
+    container_name: csb-identity
     image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
     ports:
       - "8084:8084"
@@ -232,10 +231,22 @@ services:
       RESOURCE_PERMISSIONS_ENABLED: "false"
       IDENTITY_MAPPINGRULES_0_NAME: "Zeebe role mapper"
       IDENTITY_MAPPINGRULES_0_CLAIMNAME: "client_id"
-      IDENTITY_MAPPINGRULES_0_CLAIMVALUE: "zeebe-client"
+      IDENTITY_MAPPINGRULES_0_CLAIMVALUE: ${ZEEBE_CLIENT_ID}
       IDENTITY_MAPPINGRULES_0_OPERATOR: EQUALS
       IDENTITY_MAPPINGRULES_0_RULETYPE: ROLE
       IDENTITY_MAPPINGRULES_0_APPLIEDROLENAMES_0: "Zeebe"
+      IDENTITY_MAPPINGRULES_1_NAME: "Identity role mapper"
+      IDENTITY_MAPPINGRULES_1_CLAIMNAME: "sub"
+      IDENTITY_MAPPINGRULES_1_CLAIMVALUE: "1"
+      IDENTITY_MAPPINGRULES_1_OPERATOR: EQUALS
+      IDENTITY_MAPPINGRULES_1_RULETYPE: ROLE
+      IDENTITY_MAPPINGRULES_1_APPLIEDROLENAMES_0: "Identity"
+      IDENTITY_MAPPINGRULES_2_NAME: "Operate role mapper"
+      IDENTITY_MAPPINGRULES_2_CLAIMNAME: "sub"
+      IDENTITY_MAPPINGRULES_2_CLAIMVALUE: "2"
+      IDENTITY_MAPPINGRULES_2_OPERATOR: EQUALS
+      IDENTITY_MAPPINGRULES_2_RULETYPE: ROLE
+      IDENTITY_MAPPINGRULES_2_APPLIEDROLENAMES_0: "Operate"
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s
@@ -246,12 +257,14 @@ services:
     volumes:
       - ./identity-application.yaml:/app/config/application.yaml
       - keycloak-theme:/app/keycloak-theme
+    extra_hosts:
+      - "csb-idp.docker:host-gateway"
     networks:
       - camunda-platform
       - identity-network
 
   postgres: # https://hub.docker.com/_/postgres
-    container_name: postgres
+    container_name: csb-postgres
     image: postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_DB: ca-identity-db
@@ -296,7 +309,7 @@ services:
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
-    container_name: elasticsearch
+    container_name: csb-elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -324,7 +337,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
-    container_name: kibana
+    container_name: csb-kibana
     ports:
       - 5601:5601
     volumes:
@@ -333,11 +346,10 @@ services:
       - camunda-platform
     depends_on:
       - elasticsearch
-    profiles:
-      - kibana
 
   idp:
     image: ghcr.io/soluto/oidc-server-mock
+    container_name: csb-idp
     ports:
       - 4011:5000
     environment:
@@ -370,8 +382,22 @@ services:
       - camunda-platform
       - identity-network
 
+
+  proxy:
+    container_name: csb-proxy
+    image: nginx:1.19
+    volumes:
+      - ./proxy-config/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy-config/nginx-proxyheader-http.conf:/etc/nginx/nginx-proxyheader-http.conf
+    ports:
+      - 5010:5010
+    networks:
+      - camunda-platform
+
+
   adminer: 
     image: adminer
+    container_name: csb-adminer
     restart: always
     ports:
       - 8080:8080
@@ -380,13 +406,16 @@ services:
 
   netshoot:
     image: nicolaka/netshoot
+    container_name: csb-netshoot
     restart: always
     networks:
       - identity-network
       - camunda-platform
+    extra_hosts:
+      - "csb-idp.docker:host-gateway"
     entrypoint: ["tail", "-f", "/dev/null"]
     volumes:
-      - ./netshoot:/tmp/netshoot:ro
+      - ./netshoot:/tmp/netshoot
 
 volumes:
   zeebe:

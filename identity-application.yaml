@@ -1,7 +1,7 @@
 identity:
-  url: "http://localhost:8084"
-  client-id: "identity-clientid"
-  client-secret: "identity-secret"
+  url: "http://csb-identity.docker:5010"
+  client-id: "identity-client"
+  client-secret: "identity-clientsecret"
 
   # authProvider:
   #   type: "GENERIC"
@@ -128,6 +128,7 @@ identity:
           permissions:
             - audience: "console-api"
               definition: write:*
+
 # server:
 #   port: 8080
 
@@ -137,11 +138,11 @@ spring:
 
 camunda:
   identity:
-    client-id: "identity-clientid"
-    client-secret: "identity-secret"
+    client-id: "identity-client"
+    client-secret: "identity-clientsecret"
     baseUrl: "http://identity:8084"
     issuer: "http://localhost:4011"
-    issuerBackendUrl: "http://idp:5000"
+    issuerBackendUrl: "http://csb-idp.docker:5010"
     type: "GENERIC"
 
 debug: true
