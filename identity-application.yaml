@@ -1,12 +1,8 @@
 identity:
-  url: "http://csb-identity.docker:5010"
+  url: "http://csb-identity.docker:8084"
   client-id: "identity-client"
-  client-secret: "identity-clientsecret"
+  client-secret: ${IDENTITY_CLIENT_SECRET}
 
-  # authProvider:
-  #   type: "GENERIC"
-  #   issuer-url: "http://localhost:4011"
-  #   backend-url: "http://idp:5000"
   component-presets:
     identity:
       apis:
@@ -139,10 +135,10 @@ spring:
 camunda:
   identity:
     client-id: "identity-client"
-    client-secret: "identity-clientsecret"
-    baseUrl: "http://identity:8084"
-    issuer: "http://localhost:4011"
-    issuerBackendUrl: "http://csb-idp.docker:5010"
+    client-secret: ${IDENTITY_CLIENT_SECRET}
+    baseUrl: "http://csb-identity.docker:8084"
+    issuer: ${KEYCLOAK_ISSUER_URL}
+    issuerBackendUrl: ${KEYCLOAK_ISSUER_URL}
     type: "GENERIC"
 
 debug: true
