@@ -218,37 +218,7 @@ services:
     image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
     ports:
       - "8084:8084"
-    environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
-      SERVER_PORT: 8084
-      IDENTITY_RETRY_DELAY_SECONDS: 30
-      IDENTITY_DATABASE_HOST: postgres
-      IDENTITY_DATABASE_PORT: 5432
-      IDENTITY_DATABASE_NAME: ca-identity-db
-      IDENTITY_DATABASE_USERNAME: ca-identity-user
-      IDENTITY_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
-      MULTITENANCY_ENABLED: "false"
-      USER_RESTRICTIONS_ENABLED: "false"
-      RESOURCE_PERMISSIONS_ENABLED: "false"
-      IDENTITY_MAPPINGRULES_0_NAME: "Zeebe role mapper"
-      IDENTITY_MAPPINGRULES_0_CLAIMNAME: "client_id"
-      IDENTITY_MAPPINGRULES_0_CLAIMVALUE: ${ZEEBE_CLIENT_ID}
-      IDENTITY_MAPPINGRULES_0_OPERATOR: EQUALS
-      IDENTITY_MAPPINGRULES_0_RULETYPE: ROLE
-      IDENTITY_MAPPINGRULES_0_APPLIEDROLENAMES_0: "Zeebe"
-      IDENTITY_MAPPINGRULES_1_NAME: "Identity role mapper"
-      IDENTITY_MAPPINGRULES_1_CLAIMNAME: "sub"
-      IDENTITY_MAPPINGRULES_1_CLAIMVALUE: "1"
-      IDENTITY_MAPPINGRULES_1_OPERATOR: EQUALS
-      IDENTITY_MAPPINGRULES_1_RULETYPE: ROLE
-      IDENTITY_MAPPINGRULES_1_APPLIEDROLENAMES_0: "Identity"
-      IDENTITY_MAPPINGRULES_2_NAME: "Operate role mapper"
-      IDENTITY_MAPPINGRULES_2_CLAIMNAME: "sub"
-      IDENTITY_MAPPINGRULES_2_CLAIMVALUE: "2"
-      IDENTITY_MAPPINGRULES_2_OPERATOR: EQUALS
-      IDENTITY_MAPPINGRULES_2_RULETYPE: ROLE
-      IDENTITY_MAPPINGRULES_2_APPLIEDROLENAMES_0: "Operate"
-      IDENTITY_INITIAL_CLAIM_NAME: "email"
-      IDENTITY_INITIAL_CLAIM_VALUE: "sam.identity@test.net"
+    env_file: .env
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s
