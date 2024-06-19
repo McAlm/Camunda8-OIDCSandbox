@@ -64,16 +64,16 @@ services:
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
       - CAMUNDA_IDENTITY_TYPE=GENERIC
-      - CAMUNDA_IDENTITY_ISSUER=http://idp:5000
-      - CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=http://csb-idp.docker:5010
+      - CAMUNDA_IDENTITY_ISSUER=${KEYCLOAK_ISSUER_URL}
+      - CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=${KEYCLOAK_ISSUER_URL}
       - CAMUNDA_IDENTITY_CLIENT_ID=operate-client
-      - CAMUNDA_IDENTITY_CLIENT_SECRET=operate-clientsecret
-      - CAMUNDA_IDENTITY_AUDIENCE=operate-res
-      - CAMUNDA_IDENTITY_BASE_URL=http://identity:8084
+      - CAMUNDA_IDENTITY_CLIENT_SECRET=ixdLuNDJPOGVBAJ7w3KtaftxbOeLz9E4
+      - CAMUNDA_IDENTITY_AUDIENCE=operate-client-audience
+      - CAMUNDA_IDENTITY_BASE_URL=http://csb-identity.docker:8084
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
       - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
-      - ZEEBE_AUTHORIZATION_SERVER_URL=http://idp:5000/connect/token
-      - ZEEBE_TOKEN_AUDIENCE=zeebe-res
+      - ZEEBE_AUTHORIZATION_SERVER_URL=${KEYCLOAK_ISSUER_URL}/protocol/openid-connect/token
+      - ZEEBE_TOKEN_AUDIENCE=zeebe-audience
       - ZEEBE_CLIENT_CONFIG_PATH=/tmp/zeebe_auth_cache
       - SPRING_PROFILES_ACTIVE=identity-auth
     healthcheck:
